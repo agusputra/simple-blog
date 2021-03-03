@@ -18,11 +18,15 @@ Route::group([
     'prefix' => 'auth',
     'middleware' => 'api'
 ], function ($router) {
+    Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
     Route::get('logout', 'AuthController@logout');
     Route::get('refresh', 'AuthController@refresh');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('user/me', 'UserController@me');
+    Route::get('users/me', 'UserController@me');
+    Route::post('users/{user}/sync_roles', 'UserController@syncRoles');
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('posts', PostController::class);
 });

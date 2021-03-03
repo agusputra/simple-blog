@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Role;
+use App\User;
+use App\Enums\ROLE_TYPE;
 
 class AuthController extends Controller
 {
@@ -13,7 +16,20 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['register', 'login']]);
+    }
+
+    public function register(Request $request) {
+        $request->validate([
+            'email' => 'bail|required|email|unique:users',
+            'name' => 'required|min:3',
+            'password' => 'required|min:6'
+        ]);
+
+        $user = User::create($request->only(['email', 'name', 'password']));
+        $role = Role::where('name', ROLE_TYPE::user)->first();
+
+        $user->roles()->sync([$role->id]);
     }
 
     /**
