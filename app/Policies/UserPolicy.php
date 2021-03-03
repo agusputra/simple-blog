@@ -41,7 +41,7 @@ class UserPolicy
      */
     public function create(?User $user)
     {
-        return !$user || $user->hasRole(ROLE_TYPE::admin);
+        return $user->hasRole(ROLE_TYPE::admin);
     }
 
     /**
@@ -53,7 +53,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return (!$user->id === $model->id) || $user->hasRole(ROLE_TYPE::admin);
+        return ($user->id === $model->id) || $user->hasRole(ROLE_TYPE::admin);
     }
 
     /**
